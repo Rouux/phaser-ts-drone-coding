@@ -1,3 +1,5 @@
+Math.clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+
 class Vector2 {
 	constructor(x = 0, y = 0) {
 		Vector2.prototype.isVector2 = true;
@@ -300,8 +302,9 @@ class Drone {
 	constructor(x = 0, y = 0) {
 		this.position = new Vector2(x, y);
 		this.speed = 8;
-		this.moveThreshold = 1;
+		this.moveThreshold = 1e-3;
 		this.actions = {};
+		this.memory = {};
 		this.run = function () {};
 	}
 
@@ -325,15 +328,24 @@ class Drone {
 		});
 	}
 
-	move(delta, x, y) {
+	moveTo(delta, x, y) {
 		const destination = new Vector2(x, y);
 		if (this.position.distanceTo(destination) < this.moveThreshold) {
 			delete this.actions['move'];
 			return;
 		}
 		const direction = destination.sub(this.position).normalize();
-		this.position.x += direction.x * this.speed * delta;
-		this.position.y += direction.y * this.speed * delta;
+		const movement = direction.multiplyScalar(this.speed * delta);
+		this.position.x = Math.clamp(
+			this.x + movement.x,
+			Math.min(this.x, x),
+			Math.max(this.x, x)
+		);
+		this.position.y = Math.clamp(
+			this.y + movement.y,
+			Math.min(this.y, y),
+			Math.max(this.y, y)
+		);
 	}
 }
 
@@ -366,9 +378,12 @@ function compile(message) {
 	);
 }
 
-function nextTick() {
+function nextTick(drone) {
 	const self = {
 		_actions: [],
+		x: drone.x,
+		y: drone.y,
+		memory: drone.memory,
 		move(x, y) {
 			this._actions.push({
 				op: 'move',
@@ -381,7 +396,7 @@ function nextTick() {
 }
 
 function update(delta) {
-	nextTick();
+	nextTick(drone);
 	drone.tick(delta);
 }
 
