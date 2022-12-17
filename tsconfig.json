@@ -7,7 +7,9 @@
 		"module": "commonjs",
 		"allowJs": true,
 		"target": "es5",
-		"moduleResolution": "node"
+		"moduleResolution": "node",
+		"typeRoots": ["./node_modules/@types", "./node_modules/phaser/types"],
+		"types": ["Phaser"]
 	},
 	"include": ["./src/**/*"]
 }

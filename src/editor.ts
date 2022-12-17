@@ -18,9 +18,3 @@ compileButton?.addEventListener('click', () => {
 	const editorText = editor.getValue();
 	window.parent.postMessage({ type: 'compile', editorText }, '/');
 });
-
-const testButton = document.getElementById('test-code--button');
-testButton?.addEventListener('click', () => {
-	const editorText = editor.getValue();
-	window.parent.postMessage({ type: 'test', editorText }, '/');
-});
