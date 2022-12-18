@@ -1,5 +1,10 @@
 body {
 	margin: 0px;
+	overflow: hidden;
+}
+
+canvas {
+	margin: 0 !important;
 }
 
 #editor--iframe {
@@ -11,15 +16,4 @@ body {
 	width: 40vw;
 	top: 0;
 	right: 0;
-}
-
-#editor {
-	overflow: auto;
-	height: calc(100vh - 40px);
-	margin: 0;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	font-size: 18px;
 }

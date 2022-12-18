@@ -3,23 +3,26 @@ import { Drone } from './Drone';
 let drone: Drone;
 
 export class GameScene extends Phaser.Scene {
+	private _drones: Phaser.GameObjects.Group;
+
 	constructor() {
 		super('GameScene');
 	}
 
-	preload() {
+	protected preload() {
 		this.load.image('logo', 'assets/phaser3-logo.png');
 		this.load.image('ship', 'assets/ship.png');
 	}
 
-	create() {
+	protected create() {
 		const logo = this.add.image(400, 70, 'logo');
 
-		const drones = this.add.group({
+		this._drones = this.add.group({
 			classType: Drone
 		});
 
-		drone = drones.get(200, 150, 'ship');
+		drone = new Drone(this, 100, 200, 'ship');
+		this._drones.add(drone, true);
 
 		this.tweens.add({
 			targets: logo,
@@ -31,9 +34,9 @@ export class GameScene extends Phaser.Scene {
 		});
 	}
 
-	update(_time: number, delta: number): void {
+	public update(time: number, delta: number): void {
 		delta /= 1000;
-		drone.update(delta);
+		this._drones.children.iterate(drone => drone.update(time, delta));
 	}
 }
 

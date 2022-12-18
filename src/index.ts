@@ -7,8 +7,10 @@ new Game({
 	parent: 'phaser-container',
 	backgroundColor: '#33A5E7',
 	scale: {
-		mode: Phaser.Scale.ENVELOP,
-		autoCenter: Phaser.Scale.CENTER_BOTH
+		autoCenter: Phaser.Scale.CENTER_BOTH,
+		resizeInterval: 1000,
+		width: window.innerWidth,
+		height: window.innerHeight
 	},
 	scene: [GameScene]
 });

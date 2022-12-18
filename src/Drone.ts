@@ -1,8 +1,3 @@
-import { Vector2 } from './Vector2';
-
-const clamp = (num: number, min: number, max: number): number =>
-	Math.min(Math.max(num, min), max);
-
 function nextTick(drone: Drone) {
 	const self = {
 		// @ts-ignore
@@ -30,14 +25,14 @@ export class Drone extends Phaser.GameObjects.Sprite {
 
 	constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
 		super(scene, x, y, texture);
-		this.speed = 8;
+		this.speed = 100;
 		this.moveThreshold = 1e-3;
 		this.actions = {};
 		this.memory = {};
 		this.run = function () {};
 	}
 
-	public update(delta: number): void {
+	public update(_time: number, delta: number): void {
 		this.updateActions(nextTick(this));
 		Object.keys(this.actions).forEach(key => {
 			// @ts-ignore
@@ -45,21 +40,21 @@ export class Drone extends Phaser.GameObjects.Sprite {
 		});
 	}
 
-	protected moveTo(delta: number, x: number, y: number) {
-		const destination = new Vector2(x, y);
-		const position = new Vector2(this.x, this.y);
-		if (position.distanceTo(destination) < this.moveThreshold) {
+	protected moveTo(delta: number, x: number, y: number): void {
+		const destination = new Phaser.Math.Vector2(x, y);
+		const position = new Phaser.Math.Vector2(this.x, this.y);
+		if (position.distance(destination) < this.moveThreshold) {
 			delete this.actions['moveTo'];
 			return;
 		}
-		const direction = destination.sub(position).normalize();
-		const movement = direction.multiplyScalar(this.speed * delta);
-		this.x = clamp(
+		const direction = destination.subtract(position).normalize();
+		const movement = direction.scale(this.speed * delta);
+		this.x = Phaser.Math.Clamp(
 			this.x + movement.x,
 			Math.min(this.x, x),
 			Math.max(this.x, x)
 		);
-		this.y = clamp(
+		this.y = Phaser.Math.Clamp(
 			this.y + movement.y,
 			Math.min(this.y, y),
 			Math.max(this.y, y)
