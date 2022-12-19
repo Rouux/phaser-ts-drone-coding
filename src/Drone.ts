@@ -1,4 +1,5 @@
 import { DroneEditor } from './DroneEditor';
+import { Vector2, clamp } from './utils/math';
 
 function nextTick(drone: Drone) {
 	const self = {
@@ -58,20 +59,20 @@ export class Drone extends Phaser.GameObjects.Sprite {
 	}
 
 	protected moveTo(delta: number, x: number, y: number): void {
-		const destination = new Phaser.Math.Vector2(x, y);
-		const position = new Phaser.Math.Vector2(this.x, this.y);
+		const destination = new Vector2(x, y);
+		const position = new Vector2(this.x, this.y);
 		if (position.distance(destination) < this.moveThreshold) {
 			delete this.actions['moveTo'];
 			return;
 		}
 		const direction = destination.subtract(position).normalize();
 		const movement = direction.scale(this.speed * delta);
-		this.x = Phaser.Math.Clamp(
+		this.x = clamp(
 			this.x + movement.x,
 			Math.min(this.x, x),
 			Math.max(this.x, x)
 		);
-		this.y = Phaser.Math.Clamp(
+		this.y = clamp(
 			this.y + movement.y,
 			Math.min(this.y, y),
 			Math.max(this.y, y)
