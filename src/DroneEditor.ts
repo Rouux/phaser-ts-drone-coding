@@ -1,4 +1,5 @@
 import { Drone } from './Drone';
+import { EditorRequest, EditorResponse } from './editor-enum';
 
 export class DroneEditor {
 	public static CurrentDrone: Drone = undefined;
@@ -9,15 +10,15 @@ export class DroneEditor {
 			const message = event.data;
 			const drone = DroneEditor.CurrentDrone;
 			switch (message.type) {
-				case 'openEditor':
-					DroneEditor.editor.style.display = 'initial';
+				case EditorResponse.OPEN_EDITOR:
+					DroneEditor.Editor.style.display = 'initial';
 					break;
-				case 'closeEditor':
+				case EditorResponse.CLOSE_EDITOR:
 					if (drone) {
 						drone.editor.text = message.editorText;
 					}
 					break;
-				case 'compile':
+				case EditorResponse.COMPILE:
 					if (drone) {
 						drone.editor.updateCode(message.editorText);
 					}
@@ -34,7 +35,7 @@ export class DroneEditor {
 		this._drone = drone;
 	}
 
-	public static get editor() {
+	public static get Editor() {
 		return (this._editor ??= <HTMLIFrameElement>(
 			document.getElementById('editor--iframe')
 		));
@@ -65,23 +66,23 @@ export class DroneEditor {
 	public isEditorOpenFor(drone: Drone) {
 		return (
 			DroneEditor.CurrentDrone === drone &&
-			DroneEditor.editor.style.display === 'initial'
+			DroneEditor.Editor.style.display === 'initial'
 		);
 	}
 
 	public open() {
 		DroneEditor.CurrentDrone = this._drone;
-		DroneEditor.editor.contentWindow.postMessage({
-			op: 'openEditor',
+		DroneEditor.Editor.contentWindow.postMessage({
+			op: EditorRequest.OPEN_EDITOR,
 			name: this._drone.name,
 			text: this._text
 		});
 	}
 
 	public close() {
-		DroneEditor.editor.style.display = 'none';
-		DroneEditor.editor.contentWindow.postMessage({
-			op: 'closeEditor'
+		DroneEditor.Editor.style.display = 'none';
+		DroneEditor.Editor.contentWindow.postMessage({
+			op: EditorRequest.CLOSE_EDITOR
 		});
 	}
 
