@@ -10,7 +10,7 @@ canvas {
 #editor--iframe {
 	position: fixed;
 	margin: 1em;
-	min-height: 20em;
+	min-height: 60vh;
 	height: fit-content;
 	max-height: 100vh;
 	width: 40vw;

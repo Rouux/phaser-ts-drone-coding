@@ -1,3 +1,5 @@
+import { DroneEditor } from './DroneEditor';
+
 function nextTick(drone: Drone) {
 	const self = {
 		// @ts-ignore
@@ -12,24 +14,39 @@ function nextTick(drone: Drone) {
 			});
 		}
 	};
-	drone.run.call(self);
-	return self._actions;
+	return drone.editor.run(self);
 }
 
 export class Drone extends Phaser.GameObjects.Sprite {
+	public readonly editor: DroneEditor;
+
 	public speed: number;
 	public moveThreshold: number;
 	public actions: any;
 	public memory: any;
-	public run: any;
 
-	constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
+	constructor(
+		scene: Phaser.Scene,
+		x: number,
+		y: number,
+		texture: string,
+		name?: string
+	) {
 		super(scene, x, y, texture);
+		this.name = name;
+		this.setInteractive();
 		this.speed = 100;
 		this.moveThreshold = 1e-3;
 		this.actions = {};
 		this.memory = {};
-		this.run = function () {};
+		this.editor = new DroneEditor(this);
+		this.on('pointerup', () => {
+			if (this.editor.isEditorOpenFor(this)) {
+				this.editor.close();
+			} else {
+				this.editor.open();
+			}
+		});
 	}
 
 	public update(_time: number, delta: number): void {

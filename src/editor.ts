@@ -18,3 +18,18 @@ compileButton?.addEventListener('click', () => {
 	const editorText = editor.getValue();
 	window.parent.postMessage({ type: 'compile', editorText }, '/');
 });
+
+window.addEventListener('message', event => {
+	const message = event.data;
+	const editorText = editor.getValue();
+	switch (message.op) {
+		case 'openEditor':
+			document.getElementById('editor-drone-name').textContent = message.name;
+			editor.setValue(message.text || '// Type your code here ...');
+			window.parent.postMessage({ type: 'openEditor', editorText }, '/');
+			break;
+		case 'closeEditor':
+			window.parent.postMessage({ type: 'closeEditor', editorText }, '/');
+			break;
+	}
+});

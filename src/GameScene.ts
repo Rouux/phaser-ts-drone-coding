@@ -1,7 +1,5 @@
 import { Drone } from './Drone';
 
-let drone: Drone;
-
 export class GameScene extends Phaser.Scene {
 	private _drones: Phaser.GameObjects.Group;
 
@@ -21,8 +19,7 @@ export class GameScene extends Phaser.Scene {
 			classType: Drone
 		});
 
-		drone = new Drone(this, 100, 200, 'ship');
-		this._drones.add(drone, true);
+		this._drones.add(new Drone(this, 100, 200, 'ship', 'drone-001'), true);
 
 		this.tweens.add({
 			targets: logo,
@@ -38,27 +35,4 @@ export class GameScene extends Phaser.Scene {
 		delta /= 1000;
 		this._drones.children.iterate(drone => drone.update(time, delta));
 	}
-}
-
-window.addEventListener('message', function (event) {
-	const message = event.data;
-	console.log('Message received from the child iframe: ', message);
-	switch (message.type) {
-		case 'compile':
-			compile(message);
-			break;
-	}
-});
-
-function compile(message: any) {
-	drone.run = new Function(
-		'window',
-		'Window',
-		'document',
-		'globalThis',
-		'eval',
-		'self',
-		'frames',
-		`with(this) {${message.editorText}}`
-	);
 }
