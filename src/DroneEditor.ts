@@ -1,17 +1,22 @@
 import { Drone } from './Drone';
 import { EditorRequest, EditorResponse } from './editor-enum';
+import { LimitedQueue } from './utils/collections';
 
 export class DroneEditor {
-	public static CurrentDrone: Drone = undefined;
+	public static EditedQueue = new LimitedQueue<Drone>(10);
 	private static _editor: HTMLIFrameElement;
 
 	static {
 		window.addEventListener('message', event => {
 			const message = event.data;
-			const drone = DroneEditor.CurrentDrone;
+			let drone = this.EditedQueue.lastInserted();
 			switch (message.type) {
 				case EditorResponse.OPEN_EDITOR:
-					DroneEditor.Editor.style.display = 'initial';
+					this.Editor.style.display = 'initial';
+					drone = this.EditedQueue.lastInserted(1);
+					if (drone) {
+						drone.editor.text = message.editorText;
+					}
 					break;
 				case EditorResponse.CLOSE_EDITOR:
 					if (drone) {
@@ -65,13 +70,13 @@ export class DroneEditor {
 
 	public isEditorOpenFor(drone: Drone) {
 		return (
-			DroneEditor.CurrentDrone === drone &&
+			DroneEditor.EditedQueue.lastInserted() === drone &&
 			DroneEditor.Editor.style.display === 'initial'
 		);
 	}
 
 	public open() {
-		DroneEditor.CurrentDrone = this._drone;
+		DroneEditor.EditedQueue.push(this._drone);
 		DroneEditor.Editor.contentWindow.postMessage({
 			op: EditorRequest.OPEN_EDITOR,
 			name: this._drone.name,

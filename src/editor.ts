@@ -24,15 +24,19 @@ window.addEventListener('message', event => {
 	const message = event.data;
 	switch (message.op) {
 		case EditorRequest.OPEN_EDITOR:
+			const editorOldValue = editor.getValue();
 			document.getElementById('editor-drone-name').textContent = message.name;
+			editor.setValue('', -1);
 			editor.setValue(message.text || '', -1);
-			window.parent.postMessage(
-				{
-					type: EditorResponse.OPEN_EDITOR,
-					editorText: editor.getValue()
-				},
-				'/'
-			);
+			setTimeout(() => {
+				window.parent.postMessage(
+					{
+						type: EditorResponse.OPEN_EDITOR,
+						editorText: editorOldValue
+					},
+					'/'
+				);
+			}, 100);
 			break;
 		case EditorRequest.CLOSE_EDITOR:
 			window.parent.postMessage(

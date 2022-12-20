@@ -20,6 +20,7 @@ export class GameScene extends Phaser.Scene {
 		});
 
 		this._drones.add(new Drone(this, 100, 200, 'ship', 'drone-001'), true);
+		this._drones.add(new Drone(this, 200, 400, 'ship', 'drone-002'), true);
 
 		this.tweens.add({
 			targets: logo,
