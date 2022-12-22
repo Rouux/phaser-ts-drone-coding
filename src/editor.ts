@@ -3,7 +3,7 @@ import 'brace/ext/language_tools';
 import 'brace/mode/javascript';
 import 'brace/snippets/javascript';
 import 'brace/theme/monokai';
-import { EditorRequest, EditorResponse } from './editor-enum';
+import { EditorRequest, EditorResponse } from './config/editor-enum';
 
 const editor = ace.edit('editor');
 editor.setTheme('ace/theme/monokai');

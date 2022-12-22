@@ -1,4 +1,5 @@
 import { DroneEditor } from './DroneEditor';
+import { Depth } from './config/depth';
 import { Vector2, clamp } from './utils/math';
 
 function nextTick(drone: Drone) {
@@ -34,8 +35,9 @@ export class Drone extends Phaser.GameObjects.Sprite {
 		name?: string
 	) {
 		super(scene, x, y, texture);
-		this.name = name;
 		this.setInteractive();
+		this.depth = Depth.DRONE;
+		this.name = name;
 		this.speed = 100;
 		this.moveThreshold = 1e-3;
 		this.actions = {};
@@ -43,7 +45,7 @@ export class Drone extends Phaser.GameObjects.Sprite {
 		this.editor = new DroneEditor(this);
 		this.on('pointerup', () => {
 			if (this.editor.isEditorOpenFor(this)) {
-				this.editor.close();
+				DroneEditor.Close();
 			} else {
 				this.editor.open();
 			}

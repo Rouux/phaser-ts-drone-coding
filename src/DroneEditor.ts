@@ -1,5 +1,5 @@
 import { Drone } from './Drone';
-import { EditorRequest, EditorResponse } from './editor-enum';
+import { EditorRequest, EditorResponse } from './config/editor-enum';
 import { LimitedQueue } from './utils/collections';
 
 export class DroneEditor {
@@ -46,6 +46,13 @@ export class DroneEditor {
 		));
 	}
 
+	public static Close() {
+		DroneEditor.Editor.style.display = 'none';
+		DroneEditor.Editor.contentWindow.postMessage({
+			op: EditorRequest.CLOSE_EDITOR
+		});
+	}
+
 	public get text(): string {
 		return this._text;
 	}
@@ -81,13 +88,6 @@ export class DroneEditor {
 			op: EditorRequest.OPEN_EDITOR,
 			name: this._drone.name,
 			text: this._text
-		});
-	}
-
-	public close() {
-		DroneEditor.Editor.style.display = 'none';
-		DroneEditor.Editor.contentWindow.postMessage({
-			op: EditorRequest.CLOSE_EDITOR
 		});
 	}
 

@@ -1,3 +1,3 @@
 export const clamp = Phaser.Math.Clamp;
 
-export const Vector2 = Phaser.Math.Vector2;
+export class Vector2 extends Phaser.Math.Vector2 {}
