@@ -10,7 +10,11 @@ new Game({
 	scale: {
 		mode: Phaser.Scale.RESIZE,
 		width: '100%',
-		height: '100%'
+		height: '100%',
+		min: {
+			width: 400,
+			height: 400
+		}
 	},
 	scene: [GameScene, UIScene]
 });
