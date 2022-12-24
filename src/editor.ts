@@ -28,15 +28,13 @@ window.addEventListener('message', event => {
 			document.getElementById('editor-drone-name').textContent = message.name;
 			editor.setValue('', -1);
 			editor.setValue(message.text || '', -1);
-			setTimeout(() => {
-				window.parent.postMessage(
-					{
-						type: EditorResponse.OPEN_EDITOR,
-						editorText: editorOldValue
-					},
-					'/'
-				);
-			}, 100);
+			window.parent.postMessage(
+				{
+					type: EditorResponse.OPEN_EDITOR,
+					editorText: editorOldValue
+				},
+				'/'
+			);
 			break;
 		case EditorRequest.CLOSE_EDITOR:
 			window.parent.postMessage(

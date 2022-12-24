@@ -35,6 +35,5 @@ export class GameScene extends Phaser.Scene {
 	public update(time: number, delta: number): void {
 		delta /= 1000;
 		this.player.update(time, delta);
-		this.player.fleet.forEach(drone => drone.update(time, delta));
 	}
 }

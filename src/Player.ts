@@ -1,12 +1,13 @@
 import { Depth } from './config/depth';
 import { Drone } from './Drone';
+import { Fleet } from './Fleet';
 import { clamp, Vector2 } from './utils/math';
 
 export class Player extends Phaser.GameObjects.Sprite {
 	public speed: number;
 	public moveThreshold: number;
 	public target: Vector2;
-	public fleet: Drone[];
+	public fleet: Fleet;
 
 	constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
 		super(scene, x, y, texture);
@@ -16,7 +17,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 		this.speed = 500;
 		this.moveThreshold = 1e-3;
 		this.target = undefined;
-		this.fleet = [];
+		this.fleet = new Fleet();
 	}
 
 	public spawnDrone(scene: Phaser.Scene): Drone {
@@ -29,17 +30,17 @@ export class Player extends Phaser.GameObjects.Sprite {
 				minimumIntegerDigits: 3
 			})}`
 		);
-		this.fleet.push(drone);
-		return drone;
+		return this.fleet.addDrone(drone);
 	}
 
-	public update(_time: number, delta: number): void {
+	public update(time: number, delta: number): void {
 		if (this.target) {
 			const reachedTarget = this.moveTo(delta, this.target.x, this.target.y);
 			if (reachedTarget) {
 				this.target = undefined;
 			}
 		}
+		this.fleet.updateAll(time, delta);
 	}
 
 	protected moveTo(delta: number, x: number, y: number): boolean {
